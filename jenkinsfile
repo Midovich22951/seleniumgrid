@@ -1,4 +1,4 @@
-node('maven') {
+node('nodejs-vwrvj') {
   stage('Build App') {
     git url: "https://github.com/Midovich22951/seleniumgrid.git"
     sh "mvn clean install"
