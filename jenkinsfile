@@ -1,0 +1,18 @@
+node('maven') {
+  stage('Build App') {
+    git url: "https://github.com/Midovich22951/seleniumgrid.git"
+    sh "mvn clean install"
+  }
+  stage('Integration Test') {
+    sh "mvn verify"
+  }
+  stage('Build Image') {
+    sh "oc start-build selenium --from-file=target/cart.jar --follow"
+  }
+  stage('Deploy') {
+    openshiftDeploy depCfg: 'seleniumgrid'
+    openshiftVerifyDeployment depCfg: 'seleniumgrid', replicaCount: 1, verifyReplicaCount: true
+  }
+  
+
+}
