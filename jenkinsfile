@@ -1,18 +1,17 @@
-node('nodejs-vwrvj') {
-  stage('Build App') {
+
+// This shows a simple example of how to archive the build output artifacts.
+node {
+    stage "Create build output"
+    
     git url: "https://github.com/Midovich22951/seleniumgrid.git"
     sh "mvn clean install"
-  }
-  stage('Integration Test') {
+
+    stage "Integration Test"
     sh "mvn verify"
-  }
-  stage('Build Image') {
-    sh "oc start-build selenium --from-file=target/cart.jar --follow"
-  }
-  stage('Deploy') {
+
+    stage('Deploy') {
     openshiftDeploy depCfg: 'seleniumgrid'
     openshiftVerifyDeployment depCfg: 'seleniumgrid', replicaCount: 1, verifyReplicaCount: true
   }
-  
 
 }
