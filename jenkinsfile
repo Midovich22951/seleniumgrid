@@ -1,17 +1,6 @@
-
-// This shows a simple example of how to archive the build output artifacts.
-node {
-    stage "Create build output"
-    
-    git url: "https://github.com/Midovich22951/seleniumgrid.git"
-    sh "mvn clean install"
-
-    stage "Integration Test"
-    sh "mvn verify"
-
-    stage('Deploy') {
-    openshiftDeploy depCfg: 'seleniumgrid'
-    openshiftVerifyDeployment depCfg: 'seleniumgrid', replicaCount: 1, verifyReplicaCount: true
-  }
-
+node  {
+  stage 'build'
+  openshiftBuild(buildConfig: 'selenium-hub', showBuildLogs: 'true')
+  stage 'deploy'
+  openshiftDeploy(deploymentConfig: 'selenium-hub')
 }
