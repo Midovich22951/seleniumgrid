@@ -10,6 +10,7 @@ node {
    }
    stage('create project')
       {
+        sh echo "create project"
         sh "oc new-project seleniumtest"
       }
 
