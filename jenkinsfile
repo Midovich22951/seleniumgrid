@@ -8,6 +8,11 @@ node {
       // **       in the global configuration.           
       mvnHome = tool 'M3'
    }
+   stage('create project')
+      {
+        sh "oc new-project seleniumtest"
+      }
+
    stage('Build') {
       // Run the maven build
       if (isUnix()) {
