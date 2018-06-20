@@ -1,5 +1,4 @@
-pipeline {
-    node
+node
     {
     stages {
         stage('Build') {
@@ -19,4 +18,3 @@ pipeline {
         }
     }
   }
-}
