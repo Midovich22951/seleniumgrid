@@ -17,7 +17,7 @@ spec:
             agent {
               node {
                 // spin up a node.js slave pod to run this build on
-                label 'seleniumhub'
+                label 'master'
               }
             }
             options {
