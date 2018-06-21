@@ -5,14 +5,10 @@ metadata:
 spec:
   strategy:
     jenkinsPipelineStrategy:
-      jenkinsfile: |-
-        // path of the template to use
+      jenkinsfile:
         def templatePath = 'https://raw.githubusercontent.com/Midovich22951/seleniumgrid/master/selenium-hub.yaml'
-        // name of the template that will be created
         def templateName = 'selenium-hub'
-        // NOTE, the "pipeline" directive/closure from the declarative pipeline syntax needs to include, or be nested outside,
-        // and "openshift" directive/closure from the OpenShift Client Plugin for Jenkins.  Otherwise, the declarative pipeline engine
-        // will not be fully engaged.
+
         pipeline {
             agent {
               node {
