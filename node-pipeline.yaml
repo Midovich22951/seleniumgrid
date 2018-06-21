@@ -59,6 +59,7 @@ spec:
                                 openshift.withProject() {
                                     // create a new application from the templatePath
                                     openshift.newApp(templatePath)
+                                    openshiftScale(replicaCount: '2')
                                 }
                             }
                 stage('build') {
@@ -71,7 +72,7 @@ spec:
                                     builds.untilEach(1) {
                                       return (it.object().status.phase == "Complete")
                                     }
-                                  openshiftScale(replicaCount: '2')
+
                                   }
                                 }
                             }
