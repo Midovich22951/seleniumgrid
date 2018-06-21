@@ -6,7 +6,7 @@ items:
   kind: BuildConfig
   metadata:
     annotations:
-      pipeline.alpha.openshift.io/uses: '[{"name": "seleniumhub", "namespace": "selenium", "kind": "DeploymentConfig"}]'
+      pipeline.alpha.openshift.io/uses: '[{"name": "seleniumhub", "namespace": "", "kind": "DeploymentConfig"}]'
     name: selenium-hub-pipeline
   spec:
     source:
