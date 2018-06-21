@@ -71,6 +71,7 @@ spec:
                                     builds.untilEach(1) {
                                       return (it.object().status.phase == "Complete")
                                     }
+                                  openshiftScale(replicaCount: '2')
                                   }
                                 }
                             }
@@ -91,7 +92,7 @@ spec:
                                     openshift.selector("dc", templateName).related('pods').untilEach(1) {
                                         return (it.object().status.phase == "Running")
                                     }
-                                openshiftScale(replicaCount: '2')   
+                                   
                                 }
                             }
                         } // script
