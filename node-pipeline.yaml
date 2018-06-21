@@ -59,7 +59,7 @@ spec:
                                 openshift.withProject() {
                                     // create a new application from the templatePath
                                     openshift.newApp(templatePath)
-                                    openshiftScale(replicaCount: '2')
+                                    // openshiftScale(replicaCount: '2')
                                 }
                             }
                 stage('build') {
