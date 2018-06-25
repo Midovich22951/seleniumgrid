@@ -1,9 +1,9 @@
 def templatePath = 'https://raw.githubusercontent.com/Midovich22951/seleniumgrid/master/selenium-hub.yaml' 
-def templateName = 'nselenium-hub' 
+def templateName = 'selenium-hub' 
 pipeline {
   agent {
     node {
-      label 'seleniumhub' 
+      label 'master' 
     }
   }
   options {
