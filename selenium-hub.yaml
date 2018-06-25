@@ -29,7 +29,7 @@ objects:
   metadata:
     name: selenium-hub
   spec:
-    replicas: "${{REPLICA_COUNT}}"
+    replicas: 1
     selector:
       type: selenium-hub
     template:
