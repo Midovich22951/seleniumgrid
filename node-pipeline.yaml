@@ -24,7 +24,7 @@ spec:
                 // set a timeout of 20 minutes for this pipeline
                 timeout(time: 20, unit: 'MINUTES')
             }
-            stages {
+            
                 stage('preamble') {
                     steps {
                         script {
@@ -113,6 +113,6 @@ spec:
                         } // script
                     } // steps
                 } // stage
-            } // stages
+             // stages
         } // pipeline
       type: JenkinsPipeline
