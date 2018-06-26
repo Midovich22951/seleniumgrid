@@ -1,5 +1,8 @@
-def templatePath = 'https://raw.githubusercontent.com/Midovich22951/seleniumgrid/master/selenium-hub.yaml' 
+def templatePath = 'https://raw.githubusercontent.com/Midovich22951/seleniumgrid/master/selenium-hub.yaml'
+def templatePath1 = 'https://raw.githubusercontent.com/Midovich22951/seleniumgrid/master/selenium-node-template.yaml'
+
 def templateName = 'selenium-hub' 
+def templateName1 = 'selenium-node-chrome'
 pipeline {
   agent {
     node {
@@ -21,21 +24,27 @@ pipeline {
             }
         }
     }
-    stage('cleanup') {
+    stage('cleanup selenium grid') {
       steps {
         script {
             openshift.withCluster() {
-                openshift.withProject() {
-                  openshift.selector("all", [ template : templateName ]).delete() 
-                  if (openshift.selector("secrets", templateName).exists()) { 
-                    openshift.selector("secrets", templateName).delete()
+                        openshift.withProject() {
+                            // delete everything with this template label
+                            //openshift.selector('all', [ app : templateName ]).delete()
+                            openshift.selector('route', [ app : templateName ]).delete()
+                            openshift.selector('svc', [ app : templateName ]).delete()
+                            openshift.selector('dc', [ app : templateName ]).delete()
+                          
+                            openshift.selector('route', [ app : templateName1 ]).delete()
+                            openshift.selector('svc', [ app : templateName1 ]).delete()
+                            openshift.selector('dc', [ app : templateName1 ]).delete()
+                    }
                   }
                 }
-            }
-        }
-      }
-    }
-    stage('create') {
+              }
+           }
+    
+    stage('create Hub') {
       steps {
         script {
             openshift.withCluster() {
@@ -46,7 +55,21 @@ pipeline {
         }
       }
     }
-    stage('build') {
+    
+    stage('create Nodes') {
+      steps {
+        script {
+            openshift.withCluster() {
+                openshift.withProject() {
+                  openshift.newApp(templatePath1) 
+                }
+            }
+        }
+      }
+    }
+    
+    
+    stage('build Hub') {
       steps {
         script {
             openshift.withCluster() {
@@ -58,11 +81,29 @@ pipeline {
                     }
                   }
                 }
+               
             }
         }
       }
     }
-    stage('deploy') {
+    stage('build Nodes') {
+      steps {
+        script {
+            openshift.withCluster() {
+                openshift.withProject() {
+                  def builds1 = openshift.selector("bc", templateName1).related('builds')
+                  timeout(5) { 
+                    builds1.untilEach(1) {
+                      return (it.object().status.phase == "Complete")
+                    }
+                  }
+                }
+               
+            }
+        }
+      }
+    }
+    stage('deploy Hub') {
       steps {
         script {
             openshift.withCluster() {
@@ -78,7 +119,24 @@ pipeline {
         }
       }
     }
-    stage('tag') {
+    
+    stage('deploy nodes') {
+      steps {
+        script {
+            openshift.withCluster() {
+                openshift.withProject() {
+                  def rm1 = openshift.selector("dc", templateName1).rollout()
+                  timeout(5) { 
+                    openshift.selector("dc", templateName1).related('pods').untilEach(1) {
+                      return (it.object().status.phase == "Running")
+                    }
+                  }
+                }
+            }
+        }
+      }
+    }
+    stage('tag Hub') {
       steps {
         script {
             openshift.withCluster() {
@@ -89,5 +147,18 @@ pipeline {
         }
       }
     }
+    
+     stage('tag Nodes') {
+      steps {
+        script {
+            openshift.withCluster() {
+                openshift.withProject() {
+                  openshift.tag("${templateName}:latest", "${templateName}-staging:latest") 
+                }
+            }
+        }
+      }
+    }
+    
   }
 }
